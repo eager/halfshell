@@ -1,8 +1,10 @@
-Vagrant::Config.run do |config|
-  config.vm.box = "ubuntu1210"
-  config.vm.box_url = "http://goo.gl/wxdwM"
+Vagrant.configure('2') do |config|
 
-  config.vm.forward_port 8080, 8080
+  config.vm.provider :virtualbox do |vbox, override|
+    override.vm.box = 'ubuntu/trusty64'
+  end
+
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
 
   config.vm.provision :shell, :inline => <<-SH
     apt-get update -q
@@ -17,5 +19,5 @@ Vagrant::Config.run do |config|
     GOPATH=/go go get github.com/gographics/imagick/imagick
   SH
 
-  config.vm.share_folder "gopath", "/go", ENV["GOPATH"]
+  config.vm.synced_folder ENV["GOPATH"], "/go"
 end
