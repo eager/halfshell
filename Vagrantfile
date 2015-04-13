@@ -2,6 +2,9 @@ Vagrant.configure('2') do |config|
 
   config.vm.provider :virtualbox do |vbox, override|
     override.vm.box = 'ubuntu/trusty64'
+    # otherwise `package go_1.4.2-godeb1_amd64.deb ready`
+    # fails with "error: while installing go package: fork/exec /usr/bin/dpkg: cannot allocate memory"
+    vbox.memory = 1024
   end
 
   config.vm.network "forwarded_port", guest: 8080, host: 8080
