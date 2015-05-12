@@ -1,0 +1,38 @@
+{
+    "server": {
+        "port": 8849,
+        "read_timeout": 5,
+        "write_timeout": 30
+    },
+    "statsd": {
+      "enabled": false
+    },
+    "sources": {
+        "default": {
+            "type": "http"
+        },
+        "trip-photos": {
+            "host": "fast-image-testing.s3.amazonaws.com"
+        }
+    },
+    "processors": {
+        "default": {
+            "image_compression_quality": 85,
+            "default_scale_mode": "aspect_fill",
+            "max_blur_radius_percentage": 0,
+            "max_image_height": 0,
+            "max_image_width": 1000
+
+        },
+        "trip-photos": {
+            "default_image_width": 120
+        }
+    },
+    "routes": {
+        "^/thumbnail(?P<image_path>/.*?)(\\.(?P<width>[0-9]+)x(?P<height>[0-9]+)(?P<extension>\\.\\w+))?$": {
+            "name": "trip-photos",
+            "source": "trip-photos",
+            "processor": "trip-photos"
+        }
+    }
+}

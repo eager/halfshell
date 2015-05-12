@@ -40,6 +40,7 @@ type Route struct {
 	Processor      ImageProcessor
 	Source         ImageSource
 	Statter        Statter
+	Logger         *Logger
 }
 
 // NewRouteWithConfig returns a pointer to a new Route instance created using
@@ -55,6 +56,7 @@ func NewRouteWithConfig(config *RouteConfig, statterConfig *StatterConfig) *Rout
 		Processor:      NewImageProcessorWithConfig(config.ProcessorConfig),
 		Source:         NewImageSourceWithConfig(config.SourceConfig),
 		Statter:        NewStatterWithConfig(config, statterConfig),
+		Logger: NewLogger("source.http.%s", config.Name),
 	}
 }
 
@@ -68,6 +70,9 @@ func (p *Route) ShouldHandleRequest(r *http.Request) bool {
 // from the request.
 func (p *Route) SourceAndProcessorOptionsForRequest(r *http.Request) (
 	*ImageSourceOptions, *ImageProcessorOptions) {
+
+	p.Logger.Infof("matching url: %v", r.URL.Path)
+	p.Logger.Infof("query: %v", r.URL.RawQuery)
 
 	matches := p.Pattern.FindAllStringSubmatch(r.URL.Path, -1)[0]
 	path := matches[p.ImagePathIndex]
@@ -91,7 +96,7 @@ func (p *Route) SourceAndProcessorOptionsForRequest(r *http.Request) (
 	scaleModeName := r.FormValue("scale_mode")
 	scaleMode, _ := ScaleModes[scaleModeName]
 
-	return &ImageSourceOptions{Path: path}, &ImageProcessorOptions{
+	return &ImageSourceOptions{Path: path, Query: r.URL.RawQuery}, &ImageProcessorOptions{
 		Dimensions: ImageDimensions{uint(width), uint(height)},
 		BlurRadius: blurRadius,
 		ScaleMode:  uint(scaleMode),
