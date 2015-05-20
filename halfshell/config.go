@@ -65,7 +65,7 @@ type SourceConfig struct {
 	S3Bucket    string
 	S3SecretKey string
 	Directory   string
-        Host        string
+	Host        string
 }
 
 // ProcessorConfig holds the configuration settings for the image processor.

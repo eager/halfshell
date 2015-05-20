@@ -46,7 +46,7 @@ func NewHttpImageSourceWithConfig(config *SourceConfig) ImageSource {
 }
 
 func (s *HttpImageSource) GetImage(request *ImageSourceOptions) (*Image, error) {
-	httpRequest := s.signedHTTPRequestForRequest(request)
+	httpRequest := s.unsignedHTTPRequestForRequest(request)
 	httpResponse, err := http.DefaultClient.Do(httpRequest)
 	defer httpResponse.Body.Close()
 	if err != nil {
@@ -54,7 +54,7 @@ func (s *HttpImageSource) GetImage(request *ImageSourceOptions) (*Image, error) 
 		return nil, err
 	}
 	if httpResponse.StatusCode != 200 {
-		s.Logger.Infof("non 200 response received %v", httpResponse);
+		s.Logger.Infof("non 200 response received %v", httpResponse)
 		return nil, fmt.Errorf("Error downlading image (url=%v)", httpRequest.URL)
 	}
 	image, err := NewImageFromBuffer(httpResponse.Body)
@@ -67,18 +67,18 @@ func (s *HttpImageSource) GetImage(request *ImageSourceOptions) (*Image, error) 
 	return image, nil
 }
 
-func (s *HttpImageSource) signedHTTPRequestForRequest(request *ImageSourceOptions) *http.Request {
-        imageURLPathComponents := strings.Split(request.Path, "/")
-        for index, component := range imageURLPathComponents {
-                component = url.QueryEscape(component)
-                imageURLPathComponents[index] = component
-        }
-        requestURL := &url.URL{
-                Opaque: strings.Join(imageURLPathComponents, "/"),
-                Scheme: "http",
-                Host:   s.Config.Host,
+func (s *HttpImageSource) unsignedHTTPRequestForRequest(request *ImageSourceOptions) *http.Request {
+	imageURLPathComponents := strings.Split(request.Path, "/")
+	for index, component := range imageURLPathComponents {
+		component = url.QueryEscape(component)
+		imageURLPathComponents[index] = component
+	}
+	requestURL := &url.URL{
+		Opaque:   strings.Join(imageURLPathComponents, "/"),
+		Scheme:   "http",
+		Host:     s.Config.Host,
 		RawQuery: request.Query,
-        }
+	}
 
 	s.Logger.Infof("Fetching URI %v", requestURL.RequestURI())
 	s.Logger.Infof("Fetching URL %v", requestURL.String())

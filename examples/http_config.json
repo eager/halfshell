@@ -11,8 +11,8 @@
         "default": {
             "type": "http"
         },
-        "trip-photos": {
-            "host": "fast-image-testing.s3.amazonaws.com"
+        "profile-photos": {
+            "host": "bucket.s3.amazonaws.com"
         }
     },
     "processors": {
@@ -24,15 +24,15 @@
             "max_image_width": 1000
 
         },
-        "trip-photos": {
+        "profile-photos": {
             "default_image_width": 120
         }
     },
     "routes": {
         "^/thumbnail(?P<image_path>/.*?)(\\.(?P<width>[0-9]+)x(?P<height>[0-9]+)(?P<extension>\\.\\w+))?$": {
-            "name": "trip-photos",
-            "source": "trip-photos",
-            "processor": "trip-photos"
+            "name": "profile-photos",
+            "source": "profile-photos",
+            "processor": "profile-photos"
         }
     }
 }
