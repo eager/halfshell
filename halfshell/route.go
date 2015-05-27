@@ -91,7 +91,7 @@ func (p *Route) SourceAndProcessorOptionsForRequest(r *http.Request) (
 	scaleModeName := r.FormValue("scale_mode")
 	scaleMode, _ := ScaleModes[scaleModeName]
 
-	return &ImageSourceOptions{Path: path}, &ImageProcessorOptions{
+	return &ImageSourceOptions{Path: path, Query: r.URL.RawQuery}, &ImageProcessorOptions{
 		Dimensions: ImageDimensions{uint(width), uint(height)},
 		BlurRadius: blurRadius,
 		ScaleMode:  uint(scaleMode),

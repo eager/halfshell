@@ -37,7 +37,8 @@ type ImageSource interface {
 }
 
 type ImageSourceOptions struct {
-	Path string
+	Path  string
+	Query string
 }
 
 func RegisterSource(sourceType ImageSourceType, factory ImageSourceFactoryFunction) {
