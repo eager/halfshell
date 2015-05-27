@@ -12,7 +12,8 @@
             "type": "http"
         },
         "profile-photos": {
-            "host": "bucket.s3.amazonaws.com"
+            "host": "bucket.s3.amazonaws.com",
+	    "scheme": "https"
         }
     },
     "processors": {

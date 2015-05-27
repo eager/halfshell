@@ -66,6 +66,7 @@ type SourceConfig struct {
 	S3SecretKey string
 	Directory   string
 	Host        string
+	Scheme      string
 }
 
 // ProcessorConfig holds the configuration settings for the image processor.
@@ -220,6 +221,7 @@ func (c *configParser) parseSourceConfig(sourceName string) *SourceConfig {
 		S3Bucket:    c.stringForKeypath("sources.%s.s3_bucket", sourceName),
 		Directory:   c.stringForKeypath("sources.%s.directory", sourceName),
 		Host:        c.stringForKeypath("sources.%s.host", sourceName),
+		Scheme:      c.stringForKeypath("sources.%s.scheme", sourceName),	
 	}
 }
 

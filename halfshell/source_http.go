@@ -46,7 +46,7 @@ func NewHttpImageSourceWithConfig(config *SourceConfig) ImageSource {
 }
 
 func (s *HttpImageSource) GetImage(request *ImageSourceOptions) (*Image, error) {
-	httpRequest := s.unsignedHTTPRequestForRequest(request)
+	httpRequest := s.httpRequestForRequest(request)
 	httpResponse, err := http.DefaultClient.Do(httpRequest)
 	defer httpResponse.Body.Close()
 	if err != nil {
@@ -67,7 +67,7 @@ func (s *HttpImageSource) GetImage(request *ImageSourceOptions) (*Image, error) 
 	return image, nil
 }
 
-func (s *HttpImageSource) unsignedHTTPRequestForRequest(request *ImageSourceOptions) *http.Request {
+func (s *HttpImageSource) httpRequestForRequest(request *ImageSourceOptions) *http.Request {
 	imageURLPathComponents := strings.Split(request.Path, "/")
 	for index, component := range imageURLPathComponents {
 		component = url.QueryEscape(component)
@@ -75,7 +75,7 @@ func (s *HttpImageSource) unsignedHTTPRequestForRequest(request *ImageSourceOpti
 	}
 	requestURL := &url.URL{
 		Opaque:   strings.Join(imageURLPathComponents, "/"),
-		Scheme:   "http",
+		Scheme:   s.Config.Scheme,
 		Host:     s.Config.Host,
 		RawQuery: request.Query,
 	}
